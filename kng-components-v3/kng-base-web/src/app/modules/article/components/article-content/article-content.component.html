@@ -1,0 +1,147 @@
+<k-layout [appName]="'Proyecto Base'" [pageTitle]="'Administración de article.'" [headerTemplate]="headerTemplate"
+  (logout)="logout()" [disableLinkHome]="false" [sidebarTemplate]="sidebarTemplate" [disableLoading]="false"
+  [helpTemplate]="helpTemplate" [audit]="false">
+  <ng-container *ngTemplateOutlet="mycontent">
+  </ng-container>
+</k-layout>
+<ng-template #headerTemplate>
+  <ul class="nav-ul">
+    <li class="nav-item">
+      <a class="nav-link text-a" (click)="openSaveModal()" [popover]="'Nueva article'">
+        <em class="fa fa-file-o text-info"></em> Nuevo
+      </a>
+    </li>
+  </ul>
+</ng-template>
+<ng-template #sidebarTemplate>
+  <app-article-filters (onSearchEvent)="onSearchEvent()"></app-article-filters>
+</ng-template>
+<ng-template #mycontent>
+  <div class="scroll-content-elements k-ptable-header k-paginator">
+    <p-table #dataTable [value]="values" [paginator]="true" [rows]="rows" paginatorPosition="top" [lazy]="true"
+      [totalRecords]="totalRecords" (onLazyLoad)="paginationEvent($event)" responsiveLayout="scroll"
+      styleClass="p-datatable-lg p-datatable-striped">
+      <ng-template pTemplate="caption">
+        <div class="k-ptable-header">
+          Listado de article
+        </div>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state>
+        <a class="p-disabled">Pág. {{state.totalRecords > 0 ? state.page + 1:0}} de {{state?.pageCount || "0"}}</a>
+      </ng-template>
+      <ng-template pTemplate="paginatorright" let-state>
+        <a class="p-disabled">Total Reg: {{state.totalRecords > 0 ? state.totalRecords : 0}}</a>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col" class="k-width-index">Nro.</th>
+          <th scope="col">Cédula</th>
+          <th scope="col" class="k-width-name">Nombres</th>
+          <th scope="col" class="k-width-email">Correo</th>
+          <th scope="col" class="k-width-user">Usuario registro</th>
+          <th scope="col">Fecha registro</th>
+          <th scope="col" class="k-width-state">Estado</th>
+          <th scope="col" class="k-width-action">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-person let-rowIndex="rowIndex" class="table-end-space">
+        <tr>
+          <td class="k-ellipsis-index" [popover]="rowIndex + 1">
+            {{ rowIndex + 1}}
+          </td>
+          <td class="text-center">{{person.documentNumber}}</td>
+          <td class="k-width-name">
+            <span [popover]="person.firstName+' '+person.lastName" class="k-ellipsis">
+              {{person.firstName}} {{person.lastName}}
+            </span>
+          </td>
+          <td class="k-width-email">
+            <span [popover]="person.email" class="k-ellipsis">
+              {{person.email}}
+            </span>
+          </td>
+          <td class="k-width-user">
+            <span [popover]="person.createdUsername" class="k-ellipsis">
+              {{person.createdUsername}}
+            </span>
+          </td>
+          <td class="text-center">{{person.createdDate| date :'dd-MM-yyyy HH:mm'}}</td>
+          <td class="text-center" [style]="{color: person.status?'green':'red'}">
+            <span>
+              <em style="cursor: pointer" [popover]="person.status?'Activo':'Inactivo'"
+                [ngClass]="person.status?'fa fa-check-circle-o fa-2x':'fa fa-times-circle-o fa-2x'"></em>
+            </span>
+          </td>
+          <td class="col-center">
+            <div class="d-flex justify-content-around">
+              <span (click)="openUpdateModal(person)" [popover]="'Editar'">
+                <em style="cursor: pointer; transform: scale(1.5);" class="fa fa-edit text-info"></em>
+              </span>
+              <span (click)="confirmDelete(person)" [popover]="'Eliminar'">
+                <em style="cursor: pointer; transform: scale(1.5);" class="fa fa-trash text-danger"></em>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="8" class="k-empty-table">
+            Seleccione un criterio de búsqueda.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</ng-template>
+
+<!--HELP TEMPLATE-->
+<ng-template #helpTemplate>
+  <div class='row'>
+    <div class='col-12'>
+      <k-fieldset kFieldsetLegend='Iconografía'>
+        <div class='row modal-help-body'>
+          <div class='col-1'>
+            <span class="fa fa-home icon-big text-primary"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Inicio</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-file-o text-info"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Nueva article</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-check-circle-o text-success"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Estado article</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-edit text-info"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Editar article</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-trash text-danger"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Eliminar article</p>
+          </div>
+        </div>
+      </k-fieldset>
+    </div>
+  </div>
+</ng-template>
+
+<!--CONFIRM DELETE DIALOG-->
+<p-confirmDialog #button header="Confirmation" icon="pi pi-question-circle">
+  <ng-template pTemplate="footer">
+    <button class="k-button-accept" type="button" pButton icon="pi pi-check" label="Si"
+      (click)="button.accept()"></button>
+    <button type="button" pButton icon="pi pi-times" label="No" (click)="button.reject()"></button>
+  </ng-template>
+</p-confirmDialog>

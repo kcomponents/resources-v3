@@ -1,0 +1,146 @@
+<!--MAIN LAYOUT-->
+<k-layout [appName]="'Proyecto Base'" [pageTitle]="'Administración de parámetros.'" [sidebarTemplate]="sidebarTemplate"
+  [headerTemplate]="headerTemplate" (logout)="logout()" [toolTipHomeText]="'Inicio'" [helpTemplate]="helpTemplate"
+  [titleHelpText]="'Ayuda del módulo parámetros'" [disableLoading]="false">
+  <ng-container *ngTemplateOutlet="contentTemplate">
+  </ng-container>
+</k-layout>
+
+<!--CONTENT TEMPLATE-->
+<ng-template #contentTemplate>
+  <div class="scroll-content-elements k-ptable-header k-paginator">
+    <p-table #dataTable [value]="parameters" [paginator]="true" [rows]="rows" paginatorPosition="top" [lazy]="true"
+      [totalRecords]="totalRecords" (onLazyLoad)="paginationEvent($event)" responsiveLayout="scroll">
+      <ng-template pTemplate="caption">
+        <div class="k-ptable-header">
+          Listado de parámetros
+        </div>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state>
+        <a class="p-disabled">Pág. {{state.totalRecords > 0 ? state.page + 1:0}} de {{state?.pageCount ||
+          "0"}}</a>
+      </ng-template>
+      <ng-template pTemplate="paginatorright" let-state>
+        <a class="p-disabled">Total Reg: {{state.totalRecords > 0 ? state.totalRecords : 0}}</a>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th scope="col" class="k-width-index">Nro.</th>
+          <th scope="col" class="k-width-code">Código</th>
+          <th scope="col" class="k-width-200">Descripción</th>
+          <th scope="col" class="k-width-200">Valor</th>
+          <th scope="col">Fecha registro</th>
+          <th scope="col" class="k-width-state">Estado</th>
+          <th scope="col" class="k-width-action">Acciones</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-parameter let-rowIndex="rowIndex">
+        <tr>
+          <td class="k-ellipsis-index" [popover]="rowIndex + 1">
+            {{ rowIndex + 1}}
+          </td>
+          <td class="k-width-code">{{parameter.parameterCode}}</td>
+          <td class="k-width-200 ">
+            <span [popover]="parameter.parameterDescription" class="k-ellipsis">
+              {{parameter.parameterDescription}}
+            </span>
+          </td>
+          <td class="k-width-200">
+            <span [popover]="parameter.parameteValue" class="k-ellipsis">
+              {{parameter.parameteValue}}
+            </span>
+          </td>
+          <td class="text-center">{{parameter.registerDate | date :'dd-MM-yyyy HH:mm'}}</td>
+          <td class="text-center" [style]="{color: parameter.parameterStatus == 'ACT'?'green':'red'}">
+            <em [popover]="parameter.parameterStatus == 'ACT'?'Activo':'Inactivo'"
+              [ngClass]="parameter.parameterStatus == 'ACT'?'fa fa-check-circle-o fa-2x':'fa fa-times-circle-o fa-2x'"></em>
+          </td>
+          <td class="col-center">
+            <div class="d-flex justify-content-around">
+              <span (click)="openUpdateModal(parameter)" [popover]="'Editar'">
+                <em style="cursor: pointer; transform: scale(1.5);" class="fa fa-edit text-info"></em>
+              </span>
+              <span (click)="confirmDelete(parameter)" [popover]="'Eliminar'">
+                <em style="cursor: pointer; transform: scale(1.5);" class="fa fa-trash text-danger"></em>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="7" class="k-empty-table">
+            Seleccione un criterio de búsqueda.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+</ng-template>
+
+<!--SIDEBAR TEMPLATE-->
+<ng-template #sidebarTemplate>
+  <app-parameters-filters (onSearchEvent)="onSearchEvent()"></app-parameters-filters>
+</ng-template>
+
+<!--HEADER TEMPLATE-->
+<ng-template #headerTemplate>
+  <ul class="nav-ul">
+    <li class="nav-item">
+      <a class="nav-link text-a" (click)="openSaveModal()" [popover]="'Nuevo parámetro'">
+        <em class="fa fa-file-o text-info"></em> Nuevo
+      </a>
+    </li>
+  </ul>
+</ng-template>
+
+<!--HELP TEMPLATE-->
+<ng-template #helpTemplate>
+  <div class='row'>
+    <div class='col-12'>
+      <k-fieldset kFieldsetLegend='Iconografía'>
+        <div class='row modal-help-body'>
+          <div class='col-1'>
+            <span class="fa fa-home icon-big text-primary"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Inicio</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-file-o text-info"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Nuevo parámetro</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-check-circle-o text-success"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Estado parámetro</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-edit text-info"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Editar parámetro</p>
+          </div>
+          <div class='col-1'>
+            <span class="fa fa-trash text-danger"></span>
+          </div>
+          <div class='col-11'>
+            <p class="mb-1">Eliminar parámetro</p>
+          </div>
+        </div>
+      </k-fieldset>
+    </div>
+  </div>
+</ng-template>
+
+<!--CONFIRM DELETE DIALOG-->
+<p-confirmDialog #cd header="Confirmation" icon="pi pi-question-circle">
+  <ng-template pTemplate="footer">
+    <button class="k-button-accept" type="button" pButton icon="pi pi-check" label="Si" (click)="cd.accept()"></button>
+    <button type="button" pButton icon="pi pi-times" label="No" (click)="cd.reject()"></button>
+  </ng-template>
+</p-confirmDialog>

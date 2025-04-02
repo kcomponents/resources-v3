@@ -1,0 +1,55 @@
+<!--MODAL POPUP-->
+<form class="form" #resultForm="ngForm" (submitValidForm)="clickForm()" autocomplete="off">
+    <div class="container">
+        <div class="row">
+            <!--INPUT DOCUMMENT-->
+            <div class="col-sm-5">
+                <div class="form-group ">
+                    <label>Cédula: <span class="input-required"> * </span></label>
+                    <input type="text" class="form-control" id="personDocumment" name="Cédula" maxlength="10"
+                        [disabled]="disablePersonDocument" [(ngModel)]="person.documentNumber" placeholder="Cédula"
+                        required documentValidation />
+                </div>
+            </div>
+        </div>
+        <div class="row k-search-space-top">
+            <!--INPUT NAME-->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Nombre: <span class="input-required"> * </span></label>
+                    <input type="text" class="form-control" id="personFirstName" name="Nombre" maxlength="50"
+                        [(ngModel)]="person.firstName" placeholder="Nombre" [toUpperCase]="true" [requiredNotEmpty]
+                        charactersOnly />
+                </div>
+            </div>
+            <!--INPUT LASTNAME-->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Apellido: <span class="input-required"> * </span></label>
+                    <input type="text" class="form-control" id="personSecondName" name="Apellido" maxlength="50"
+                        [(ngModel)]="person.lastName" placeholder="Apellido" required [toUpperCase]="true" [requiredNotEmpty]
+                        charactersOnly />
+                </div>
+            </div>
+            <!--INPUT EMAIL-->
+            <div class="col-sm-12 k-search-space-top">
+                <div class="form-group">
+                    <label>Correo:</label>
+                    <input type="email" class="form-control" id="personEmail" name="Correo" [(ngModel)]="person.email"
+                        maxlength="50" placeholder="Correo" [requiredNotEmpty] />
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+
+    <div class="modal-footer k-modal-footer">
+        <!--BUTTONS ACTIONS-->
+        <button class="btn btn-success btn-sm">
+            <em class="fa fa-save"></em> Guardar
+        </button>
+        <button class="btn btn-danger btn-sm" type="reset" (click)="this.ref.close()">
+            <em class="fa fa-close"></em> Cancelar
+        </button>
+    </div>
+</form>

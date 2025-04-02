@@ -1,0 +1,47 @@
+<!--MODAL POPUP-->
+<form class="form" #resultForm="ngForm" (submitValidForm)="clickForm()" autocomplete="off">
+    <div class="container">
+        <div class="row">
+            <!--INPUT PARAMETERCODE-->
+            <div class="col-sm-5">
+                <div class="form-group">
+                    <label>Código: <span class="text-primary"> * </span></label>
+                    <input type="text" class="form-control" id="parameterCode" name="Código" maxlength="10"
+                        [disabled]="disableParameter" [(ngModel)]="parameter.parameterCode" [requiredNotEmpty] placeholder="Código registro"
+                        [toUpperCase]="true" />
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <!--INPUT DESCRIPTION-->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Descripción: <span class="text-primary"> * </span></label>
+                    <input type="text" class="form-control" id="parameterDescription" name="Descripción"
+                        maxlength="1000" [(ngModel)]="parameter.parameterDescription" placeholder="Descripción registro"
+                        [toUpperCase]="true" [requiredNotEmpty] charactersOnly />
+                </div>
+            </div>
+            <!--INPUT LASTNAME-->
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Valor: <span class="text-primary"> * </span></label>
+                    <input type="text" class="form-control" id="parameteValue" name="Valor" maxlength="2500"
+                        [(ngModel)]="parameter.parameteValue" placeholder="Valor registro" required [toUpperCase]="true"
+                        [requiredNotEmpty] />
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    <div class="modal-footer k-modal-footer">
+        <!--BUTTONS ACTIONS-->
+        <button class="btn btn-success k-button-accept btn-sm">
+            <em class="fa fa-save"></em> Guardar
+        </button>
+        <button class="btn btn-danger btn-sm" type="reset" (click)="this.ref.close()">
+            <em class="fa fa-close"></em> Cancelar
+        </button>
+    </div>
+</form>
