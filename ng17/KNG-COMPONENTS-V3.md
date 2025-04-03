@@ -7,7 +7,25 @@
 
 El Componente k-layout organiza los elementos de la página en el diseño estándar de las aplicaciones web con `angular 17`. El modulo KLayoutModule depende de librerías de terceros tales como `bootstrap4`, `primeng` con el tema de Bootstrap y `toastr`, los cuales deben ser incluidos.
 
+
+
+```typescript
+import { KLayoutComponent } from '@ec.com.kgr/kng-components-v3/k-layout';
+ 
+ @Component({
+   selector: 'app-parameters-content',
+   standalone: true,
+   templateUrl: './app-parameters-content.html',
+   styleUrls: ['./app-parameters-content.scss'],
+   imports: [
+     KLayoutComponent
+   ]
+ })
+export class ParametersContentComponent implements OnInit {...}
+
 ```
+
+```html
 <k-layout 
 [appName]="'Proyecto Base'" 
 [pageTitle]="'Administración de parámetros.'" 
